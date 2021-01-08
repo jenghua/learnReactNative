@@ -1,83 +1,81 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, ScrollView, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import * as Font from 'expo-font';
+import { StyleSheet, Text, View, Button, ScrollView, FlatList, TouchableOpacity, TextInput, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import Header from './components/header';
+import TodoItem from './components/todoItem';
+import AddTodo from './components/addTodo';
+import Sandbox from './components/sandbox';
+import Home from './screens/home';
+import AppLoading from 'expo';
+
+
+
 
 export default function App() {
-  const [name, setName] = useState('shaun');
-  const [age, setAge] = useState('30');
-  const [people, setPeople] = useState([
-    {name: 'shaun', id: '1'},
-    {name: 'yoshi', id: '2'},
-    {name: 'mario', id: '3'},
-    {name: 'luigi', id: '4'},
-    {name: 'peach', id: '5'},
-    {name: 'toad', id: '6'},
-    {name: 'bowser', id: '7'},
-  ]);
-  //const [person, setPerson] = useState({ name: 'mario', age: 40});
 
-  const clickHandler = () => {
-    setName('chun-li');
-    //setPerson({name: 'luigi', age: 45});
-  }
+    const [todos, setTodos] = useState([
+      { text: 'buy coffee', key: '1' },
+      { text: 'create an app', key: '2' },
+      { text: 'play on the switch', key: '3' }
+    ]);
 
-  const pressHandler = (id) =>{
-    console.log(id);
-    setPeople(((prevPeople) =>{
-      return prevPeople.filter(person => person.id != id)
-    }))
-  }
+    const pressHandler = (key) => {
+      setTodos((prevTodos) => {
+        return prevTodos.filter(todo => todo.key != key);
+      })
+    }
+
+    const submitHandler = (text) => {
+      if(text.length > 3){
+        setTodos((prevTodos) => {
+          return [
+            { text: text, key: Math.random().toString() },
+            ...prevTodos
+          ]
+        })
+      } else {
+        Alert.alert('OOPS!', 'Todos must be over 3 chars long', [
+          {text: 'Understood', onPress: (console.log('alert closed'))}
+        ])
+      }
+    }
 
   return (
-    <View style={styles.container}>
-      <FlatList 
-        numColumns={2}
-        keyExtractor={(item) => item.id}
-        data={people}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => pressHandler(item.id)}>
-            <Text style={styles.item}>{item.name}</Text>
-          </TouchableOpacity>
-          
-        )}
-      />
-
-
-      {/* <ScrollView>
-        { people.map((item) =>(
-          <View>
-            <Text style={styles.item} key={item.key}>{item.name}</Text>
-          </View>
-        ))}
-      </ScrollView> */}
-
-
-        <Text>His name is {name} and his age is {age}</Text>
-        <TextInput
-        multiline
-         style={styles.input}
-          placeholder='e.g John Doe' onChangeText={(val) => setName(val)}/>
-
-        <TextInput
-        keyboardType= 'numeric'
-         style={styles.input}
-          placeholder='e.g 99' onChangeText={(val) => setAge(val)}/>
-
-        <View style={styles.buttonContainer}>
-          <Button title='update state' onPress={ clickHandler }/>
+    // <Sandbox />
+    <TouchableWithoutFeedback onPress={() =>{
+      Keyboard.dismiss();
+      console.log('dismissed keyboard')
+    }}>
+        <View style={styles.container}>
+      <Header />
+      <View style={styles.content}>
+        <AddTodo submitHandler={submitHandler}/>
+        <View style={styles.list}>
+          <FlatList
+            data={todos}
+            renderItem={({item}) => (
+              <TodoItem item={item} pressHandler={pressHandler}/>
+            )}
+          />
         </View>
-    </View>
+      </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 40,
-    paddingHorizontal: 20
-    // alignItems: 'center',
-    // justifyContent: 'center',
+    backgroundColor: '#fff'
+  },
+  content: {
+    padding: 40,
+    flex: 1
+  },
+  list: {
+    flex: 1,
+    marginTop: 20
   },
   buttonContainer: {
     marginTop: 20
@@ -96,5 +94,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginHorizontal: 10,
     marginTop: 24,
-  }
+  }  
 });
