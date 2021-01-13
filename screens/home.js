@@ -23,8 +23,7 @@ export default function Home({ navigation }) {
   };
 
   return (
-    <View style={globalStyles.container}>
-  
+    <View style={globalStyles.container}>  
       <Modal visible={modalOpen} animationType='slide'>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.modalContent}>
@@ -43,7 +42,7 @@ export default function Home({ navigation }) {
         name='add' 
         size={24} 
         style={styles.modalToggle}
-        onPress={() => setModalOpen(true)} 
+        onPress={() => setModalOpen(true)}
       />
 
       <FlatList data={reviews} renderItem={({ item }) => (

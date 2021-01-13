@@ -6,13 +6,14 @@ import HomeStack from './homeStack';
 import AboutStack from './aboutStack';
 
 // drawer navigation options
-const RootDrawerNavigator = createDrawerNavigator({
-  Home: {
-    screen: HomeStack,
+const RootDrawerNavigator = createDrawerNavigator(
+  {
+    Home: HomeStack,
+    About: AboutStack,
   },
-  About: {
-    screen: AboutStack,
-  },
-});
+  {
+    initialRouteName: 'Home',
+  }
+);
 
 export default createAppContainer(RootDrawerNavigator);
